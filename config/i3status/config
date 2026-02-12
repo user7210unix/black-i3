@@ -1,25 +1,85 @@
 general {
-    output_format = "i3bar"
     colors = true
     interval = 5
+    color_good = "#2ECC71"
+    color_bad = "#E74C3C"
+    color_degraded = "#F39C12"
 }
 
+order += "volume master"
 order += "cpu_usage"
 order += "memory"
+order += "disk /"
+order += "disk /home"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "battery all"
 order += "tztime local"
 
+# Volume/Audio
+volume master {
+    format = "VOL: %volume"
+    format_muted = "VOL: muted"
+    device = "default"
+    mixer = "Master"
+    mixer_idx = 0
+}
+
+# CPU Usage
 cpu_usage {
-    format = "CPU %usage"
-    format_above_threshold = "CPU <span color=\"#ef2929\">%usage%</span>"
-    max_threshold = 85
+    format = "CPU: %usage"
+    max_threshold = 75
+    degraded_threshold = 50
 }
 
+# Memory/RAM
 memory {
-    format = "RAM %used"
-    threshold_degraded = "1.5G"
-    format_degraded = "RAM <span color=\"#f57900\">%used</span>"
+    format = "RAM: %used / %total"
+    threshold_degraded = "10%"
+    threshold_critical = "5%"
+    format_degraded = "RAM: %used / %total"
 }
 
+# Root Disk Space
+disk "/" {
+    format = "/: %avail"
+    threshold_type = "percentage_avail"
+    low_threshold = 10
+}
+
+# Home Disk Space
+disk "/home" {
+    format = "/home: %avail"
+    threshold_type = "percentage_avail"
+    low_threshold = 10
+}
+
+# Wireless Network
+wireless _first_ {
+    format_up = "WiFi: %essid (%quality) %ip"
+    format_down = "WiFi: down"
+}
+
+# Ethernet Network
+ethernet _first_ {
+    format_up = "Eth: %ip (%speed)"
+    format_down = "Eth: down"
+}
+
+# Battery (for laptops)
+battery all {
+    format = "%status %percentage %remaining"
+    format_down = "No battery"
+    status_chr = "CHR"
+    status_bat = "BAT"
+    status_unk = "UNK"
+    status_full = "FULL"
+    path = "/sys/class/power_supply/BAT%d/uevent"
+    low_threshold = 15
+    threshold_type = "percentage"
+}
+
+# Time and Date
 tztime local {
-    format = "%d/%m/%Y %H:%M"
+    format = "%H:%M %d/%m/%y"
 }
